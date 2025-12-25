@@ -36,10 +36,13 @@ Features:
         # Security
         'security/ir.model.access.csv',
         # Actions  ( MUST be loaded before any view that uses them )
-        'views/actions.xml',
+        # 'views/actions.xml',
 
         # Data
         'data/sequences.xml',
+        
+        
+        
 
         # Views  (actions before menus!)
         'views/residence_views.xml',
@@ -49,6 +52,9 @@ Features:
         'views/person_apartment_views.xml',
         'views/appel_fond_views.xml',
         'views/reglement_views.xml',
+        #reports
+        'report/reglement_receipt_report.xml',
+        'report/report_reglement_receipt_templates.xml',
 
         # Menu last
         'views/menu.xml',

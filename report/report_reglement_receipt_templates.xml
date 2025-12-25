@@ -1,0 +1,16 @@
+<odoo>
+    <template id="report_reglement_receipt">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="rec">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Reçu de paiement</h2>
+                        <p>Référence : <t t-esc="rec.name"/></p>
+                        <p>Montant : <t t-esc="rec.montant"/></p>
+                        <p>Payé par : <t t-esc="rec.person_id.name"/></p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

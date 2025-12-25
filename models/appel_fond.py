@@ -65,6 +65,12 @@ class AppelFond(models.Model):
         ondelete='cascade',
         tracking=True
     )
+    reglement_ids = fields.One2many(
+        'syndic.reglement',
+        'appel_fond_id',
+        string='Règlements',
+        help='Liste des règlements liés à cet appel de fonds'
+    )
 
     # Dates
     date_emission = fields.Date(
