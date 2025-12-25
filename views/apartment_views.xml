@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_syndic_apartment_tree" model="ir.ui.view">
+        <field name="name">syndic.apartment.tree</field>
+        <field name="model">syndic.apartment</field>
+        <field name="arch" type="xml">
+            <tree string="Appartements">
+                <field name="num"/>
+                <field name="type"/>
+                <field name="building_id"/>
+                <field name="residence_id"/>
+                <field name="floor"/>
+                <field name="surface"/>
+                <field name="nb_rooms"/>
+                <field name="owner_count"/>
+                <field name="total_quote_part"/>
+                <field name="active" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Kanban View -->
+    <record id="view_syndic_apartment_kanban" model="ir.ui.view">
+        <field name="name">syndic.apartment.kanban</field>
+        <field name="model">syndic.apartment</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="num"/>
+                <field name="type"/>
+                <field name="building_id"/>
+                <field name="surface"/>
+                <field name="owner_count"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="num"/>
+                                    </strong>
+                                    <br/>
+                                    <small>
+                                        <field name="building_id"/>
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <field name="type"/>
+                                <br/>
+                                <t t-if="record.surface.value">
+                                    <i class="fa fa-arrows-alt"/> <field name="surface"/> m²
+                                </t>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <span class="badge badge-pill">
+                                        <i class="fa fa-users"/> <field name="owner_count"/> propriétaire(s)
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Form View (Odoo 17 compliant – no states/attrs on buttons) -->
+    <record id="view_syndic_apartment_form" model="ir.ui.view">
+        <field name="name">syndic.apartment.form</field>
+        <field name="model">syndic.apartment</field>
+        <field name="arch" type="xml">
+            <form string="Appartement">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="%(action_syndic_person_apartment)d" type="action"
+                                class="oe_stat_button" icon="fa-users"
+                                context="{'default_apartment_id': active_id}"
+                                invisible="active == False"/>
+                    </div>
+
+                    <widget name="web_ribbon" title="Archivé" bg_color="bg-danger"
+                            invisible="active == True"/>
+
+                    <group>
+                        <group>
+                            <field name="num"/>
+                            <field name="type"/>
+                            <field name="building_id" options="{'no_create': True}"/>
+                            <field name="residence_id"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="floor"/>
+                            <field name="surface"/>
+                            <field name="nb_rooms"/>
+                            <field name="total_quote_part"/>
+                        </group>
+                    </group>
+
+                    <group string="Description">
+                        <field name="description" nolabel="1"
+                               placeholder="Description de l'appartement..."/>
+                    </group>
+
+                    <notebook>
+                        <page string="Propriétaires / Copropriétaires">
+                            <field name="person_apartment_ids">
+                                <tree editable="bottom">
+                                    <field name="person_id"/>
+                                    <field name="statut"/>
+                                    <field name="part"/>
+                                    <field name="quote_part"/>
+                                    <field name="date_debut"/>
+                                    <field name="date_fin"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_syndic_apartment_search" model="ir.ui.view">
+        <field name="name">syndic.apartment.search</field>
+        <field name="model">syndic.apartment</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher Appartement">
+                <field name="num"/>
+                <field name="building_id"/>
+                <field name="residence_id"/>
+
+                <filter string="Appartements" name="type_appartement" domain="[('type', '=', 'appartement')]"/>
+                <filter string="Magasins" name="type_magasin" domain="[('type', '=', 'magasin')]"/>
+                <filter string="Bureaux" name="type_bureau" domain="[('type', '=', 'bureau')]"/>
+                <filter string="Parkings" name="type_parking" domain="[('type', '=', 'parking')]"/>
+
+                <separator/>
+                <filter string="Actif" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archivé" name="inactive" domain="[('active', '=', False)]"/>
+
+                <group expand="0" string="Grouper par">
+                    <filter string="Immeuble" name="group_building" context="{'group_by': 'building_id'}"/>
+                    <filter string="Résidence" name="group_residence" context="{'group_by': 'residence_id'}"/>
+                    <filter string="Type" name="group_type" context="{'group_by': 'type'}"/>
+                    <filter string="Étage" name="group_floor" context="{'group_by': 'floor'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_syndic_apartment" model="ir.actions.act_window">
+        <field name="name">Appartements</field>
+        <field name="res_model">syndic.apartment</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créer votre premier appartement</p>
+            <p>Un appartement (ou lot) fait partie d'un immeuble et peut avoir plusieurs propriétaires.</p>
+        </field>
+    </record>
+</odoo>

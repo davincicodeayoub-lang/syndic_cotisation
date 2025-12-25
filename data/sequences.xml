@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Sequence for Appel de Fonds -->
+        <record id="seq_syndic_appel_fond" model="ir.sequence">
+            <field name="name">Appel de Fonds</field>
+            <field name="code">syndic.appel.fond</field>
+            <field name="prefix">AF%(year)s</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="number_next">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for Règlement -->
+        <record id="seq_syndic_reglement" model="ir.sequence">
+            <field name="name">Règlement</field>
+            <field name="code">syndic.reglement</field>
+            <field name="prefix">REG%(year)s</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="number_next">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Sequence for Reçu (Receipt) -->
+        <record id="seq_syndic_reglement_recu" model="ir.sequence">
+            <field name="name">Reçu</field>
+            <field name="code">syndic.reglement.recu</field>
+            <field name="prefix">REC%(year)s</field>
+            <field name="padding">4</field>
+            <field name="number_increment">1</field>
+            <field name="number_next">1</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    </data>
+</odoo>

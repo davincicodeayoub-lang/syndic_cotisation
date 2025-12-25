@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--  Residence  -->
+    <record id="action_syndic_residence" model="ir.actions.act_window">
+        <field name="name">Résidences</field>
+        <field name="res_model">syndic.residence</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créer votre première résidence</p>
+            <p>Une résidence regroupe un ou plusieurs immeubles avec leurs appartements et propriétaires.</p>
+        </field>
+    </record>
+
+    <!--  Building  -->
+    <record id="action_syndic_building" model="ir.actions.act_window">
+        <field name="name">Immeubles</field>
+        <field name="res_model">syndic.building</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créer votre premier immeuble</p>
+            <p>Un immeuble fait partie d'une résidence et contient plusieurs appartements.</p>
+        </field>
+    </record>
+
+    <!--  Apartment  -->
+    <record id="action_syndic_apartment" model="ir.actions.act_window">
+        <field name="name">Appartements</field>
+        <field name="res_model">syndic.apartment</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créer votre premier appartement</p>
+            <p>Un appartement (ou lot) fait partie d'un immeuble et peut avoir plusieurs propriétaires.</p>
+        </field>
+    </record>
+
+    <!--  Person  -->
+    <record id="action_syndic_person" model="ir.actions.act_window">
+        <field name="name">Personnes</field>
+        <field name="res_model">syndic.person</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="context">{'search_default_active': 1, 'search_default_proprietaire': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Ajouter une nouvelle personne</p>
+            <p>Créez des fiches pour vos propriétaires, locataires et gérants.</p>
+        </field>
+    </record>
+
+    <!--  Person-Apartment  -->
+    <record id="action_syndic_person_apartment" model="ir.actions.act_window">
+        <field name="name">Copropriétés</field>
+        <field name="res_model">syndic.person.apartment</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="context">{'search_default_active': 1, 'search_default_en_cours': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créer une nouvelle liaison personne-appartement</p>
+            <p>Définissez qui possède ou occupe quel appartement, avec les quotes-parts correspondantes.</p>
+        </field>
+    </record>
+
+    <!--  Appel de fonds  -->
+    <record id="action_syndic_appel_fond" model="ir.actions.act_window">
+        <field name="name">Appels de fonds</field>
+        <field name="res_model">syndic.appel.fond</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="context">{'search_default_active': 1, 'search_default_annee_courante': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créer votre premier appel de fonds</p>
+            <p>Les appels de fonds permettent de facturer les charges aux copropriétaires selon leurs quotes-parts.</p>
+        </field>
+    </record>
+
+    <!--  Règlement  -->
+    <record id="action_syndic_reglement" model="ir.actions.act_window">
+        <field name="name">Règlements</field>
+        <field name="res_model">syndic.reglement</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="context">{'search_default_active': 1, 'search_default_cette_annee': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Enregistrer un nouveau règlement</p>
+            <p>Enregistrez les paiements effectués par les copropriétaires pour les appels de fonds.</p>
+        </field>
+    </record>
+</odoo>

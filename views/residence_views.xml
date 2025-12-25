@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--  Tree  -->
+    <record id="view_syndic_residence_tree" model="ir.ui.view">
+        <field name="name">syndic.residence.tree</field>
+        <field name="model">syndic.residence</field>
+        <field name="arch" type="xml">
+            <tree string="Résidences">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="city"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="building_count"/>
+                <field name="apartment_count"/>
+                <field name="owner_count"/>
+                <field name="active" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!--  Form  (Odoo 17 compliant)  -->
+    <record id="view_syndic_residence_form" model="ir.ui.view">
+        <field name="name">syndic.residence.form</field>
+        <field name="model">syndic.residence</field>
+        <field name="arch" type="xml">
+            <form string="Résidence">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="%(action_syndic_building)d" type="action"
+                                class="oe_stat_button" icon="fa-building"
+                                context="{'default_residence_id': active_id}"
+                                invisible="active == False"/>
+                        <button name="%(action_syndic_apartment)d" type="action"
+                                class="oe_stat_button" icon="fa-home"
+                                context="{'search_default_residence_id': active_id}"
+                                invisible="active == False"/>
+                        <button name="%(action_syndic_person)d" type="action"
+                                class="oe_stat_button" icon="fa-users"
+                                context="{'search_default_residence_id': active_id}"
+                                invisible="active == False"/>
+                    </div>
+
+                    <widget name="web_ribbon" title="Archivé" bg_color="bg-danger"
+                            invisible="active == True"/>
+
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="phone"/>
+                            <field name="email"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Adresse">
+                            <field name="address" placeholder="Rue, avenue..."/>
+                            <field name="city"/>
+                            <field name="postal_code"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Immeubles">
+                            <field name="building_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="code"/>
+                                    <field name="nb_floors"/>
+                                    <field name="apartment_count"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Appels de fonds">
+                            <field name="appel_fond_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="libelle"/>
+                                    <field name="montant"/>
+                                    <field name="periode"/>
+                                    <field name="date_emission"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!--  Search  -->
+    <record id="view_syndic_residence_search" model="ir.ui.view">
+        <field name="name">syndic.residence.search</field>
+        <field name="model">syndic.residence</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher Résidence">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="city"/>
+                <filter string="Actif" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archivé" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Grouper par">
+                    <filter string="Ville" name="group_city" context="{'group_by': 'city'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!--  Action  (kept here for menu reference)  -->
+    <record id="action_syndic_residence" model="ir.actions.act_window">
+        <field name="name">Résidences</field>
+        <field name="res_model">syndic.residence</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créer votre première résidence</p>
+            <p>Une résidence regroupe un ou plusieurs immeubles avec leurs appartements et propriétaires.</p>
+        </field>
+    </record>
+</odoo>

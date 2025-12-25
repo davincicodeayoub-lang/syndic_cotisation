@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_syndic_person_tree" model="ir.ui.view">
+        <field name="name">syndic.person.tree</field>
+        <field name="model">syndic.person</field>
+        <field name="arch" type="xml">
+            <tree string="Personnes">
+                <field name="name"/>
+                <field name="prenom"/>
+                <field name="type_person"/>
+                <field name="cin"/>
+                <field name="tel"/>
+                <field name="email"/>
+                <field name="apartment_count"/>
+                <field name="total_paid"/>
+                <field name="active" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Kanban View -->
+    <record id="view_syndic_person_kanban" model="ir.ui.view">
+        <field name="name">syndic.person.kanban</field>
+        <field name="model">syndic.person</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="prenom"/>
+                <field name="type_person"/>
+                <field name="tel"/>
+                <field name="email"/>
+                <field name="apartment_count"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="display_name"/>
+                                    </strong>
+                                </div>
+                                <span class="badge badge-pill badge-info float-right">
+                                    <field name="type_person"/>
+                                </span>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <t t-if="record.tel.value">
+                                    <i class="fa fa-phone"/> <field name="tel"/>
+                                    <br/>
+                                </t>
+                                <t t-if="record.email.value">
+                                    <i class="fa fa-envelope"/> <field name="email"/>
+                                </t>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <span class="badge badge-pill">
+                                        <i class="fa fa-home"/> <field name="apartment_count"/> appt.
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Form View (Odoo 17 compliant – no states/attrs on buttons) -->
+    <record id="view_syndic_person_form" model="ir.ui.view">
+        <field name="name">syndic.person.form</field>
+        <field name="model">syndic.person</field>
+        <field name="arch" type="xml">
+            <form string="Personne">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="%(action_syndic_person_apartment)d" type="action"
+                                class="oe_stat_button" icon="fa-home"
+                                context="{'default_person_id': active_id}"
+                                invisible="active == False"/>
+                        <button name="%(action_syndic_reglement)d" type="action"
+                                class="oe_stat_button" icon="fa-money"
+                                context="{'default_person_id': active_id}"
+                                invisible="active == False"/>
+                    </div>
+
+                    <widget name="web_ribbon" title="Archivé" bg_color="bg-danger"
+                            invisible="active == True"/>
+
+                    <group>
+                        <group>
+                            <field name="is_company"/>
+                            <field name="company_name"
+                                   invisible="is_company == False"
+                                   required="is_company == True"/>
+                            <field name="name" string="Nom"
+                                   invisible="is_company == True"/>
+                            <field name="prenom"
+                                   invisible="is_company == True"/>
+                            <field name="type_person"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="cin"
+                                   invisible="is_company == True"/>
+                            <field name="passport"
+                                   invisible="is_company == True"/>
+                            <field name="ice"
+                                   invisible="is_company == False"/>
+                            <field name="rc"
+                                   invisible="is_company == False"/>
+                        </group>
+                    </group>
+
+                    <group string="Contact">
+                        <group>
+                            <field name="tel"/>
+                            <field name="mobile"/>
+                            <field name="email"/>
+                        </group>
+                        <group>
+                            <field name="adresse" placeholder="Adresse complète..."/>
+                            <field name="city"/>
+                            <field name="postal_code"/>
+                        </group>
+                    </group>
+
+                    <group string="Accès Portail" groups="base.group_system">
+                        <group>
+                            <field name="login"/>
+                            <field name="password" password="True"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Appartements">
+                            <field name="apartment_ids">
+                                <tree>
+                                    <field name="apartment_id"/>
+                                    <field name="building_id"/>
+                                    <field name="residence_id"/>
+                                    <field name="statut"/>
+                                    <field name="part"/>
+                                    <field name="quote_part"/>
+                                    <field name="date_debut"/>
+                                    <field name="date_fin"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Règlements">
+                            <field name="reglement_ids">
+                                <tree>
+                                    <field name="name"/>
+                                    <field name="date"/>
+                                    <field name="montant"/>
+                                    <field name="mode"/>
+                                    <field name="appel_fond_id"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes" nolabel="1"
+                                   placeholder="Notes et informations complémentaires..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_syndic_person_search" model="ir.ui.view">
+        <field name="name">syndic.person.search</field>
+        <field name="model">syndic.person</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher Personne">
+                <field name="name"/>
+                <field name="prenom"/>
+                <field name="cin"/>
+                <field name="email"/>
+                <field name="tel"/>
+
+                <filter string="Propriétaires" name="proprietaire" domain="[('type_person', '=', 'proprietaire')]"/>
+                <filter string="Locataires" name="locataire" domain="[('type_person', '=', 'locataire')]"/>
+                <filter string="Gérants" name="gerant" domain="[('type_person', '=', 'gerant')]"/>
+
+                <separator/>
+                <filter string="Sociétés" name="companies" domain="[('is_company', '=', True)]"/>
+                <filter string="Particuliers" name="individuals" domain="[('is_company', '=', False)]"/>
+
+                <separator/>
+                <filter string="Actif" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archivé" name="inactive" domain="[('active', '=', False)]"/>
+
+                <group expand="0" string="Grouper par">
+                    <filter string="Type" name="group_type" context="{'group_by': 'type_person'}"/>
+                    <filter string="Ville" name="group_city" context="{'group_by': 'city'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_syndic_person" model="ir.actions.act_window">
+        <field name="name">Personnes</field>
+        <field name="res_model">syndic.person</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="context">{'search_default_active': 1, 'search_default_proprietaire': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Ajouter une nouvelle personne</p>
+            <p>Créez des fiches pour vos propriétaires, locataires et gérants.</p>
+        </field>
+    </record>
+</odoo>

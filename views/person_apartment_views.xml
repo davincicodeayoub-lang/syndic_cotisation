@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_syndic_person_apartment_tree" model="ir.ui.view">
+        <field name="name">syndic.person.apartment.tree</field>
+        <field name="model">syndic.person.apartment</field>
+        <field name="arch" type="xml">
+            <tree string="Copropriétés">
+                <field name="person_id"/>
+                <field name="apartment_id"/>
+                <field name="building_id"/>
+                <field name="residence_id"/>
+                <field name="statut"/>
+                <field name="part"/>
+                <field name="quote_part"/>
+                <field name="date_debut"/>
+                <field name="date_fin"/>
+                <field name="active" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View (Odoo 17 compliant – no states/attrs on buttons) -->
+    <record id="view_syndic_person_apartment_form" model="ir.ui.view">
+        <field name="name">syndic.person.apartment.form</field>
+        <field name="model">syndic.person.apartment</field>
+        <field name="arch" type="xml">
+            <form string="Copropriété">
+                <sheet>
+                    <widget name="web_ribbon" title="Archivé" bg_color="bg-danger"
+                            invisible="active == True"/>
+
+                    <group>
+                        <group>
+                            <field name="person_id" options="{'no_create': True}"/>
+                            <field name="apartment_id" options="{'no_create': True}"/>
+                            <field name="building_id"/>
+                            <field name="residence_id"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="statut"/>
+                            <field name="part"/>
+                            <field name="quote_part"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Dates">
+                            <field name="date_acquisition"/>
+                            <field name="date_debut"/>
+                            <field name="date_fin"/>
+                        </group>
+                    </group>
+
+                    <group string="Notes">
+                        <field name="notes" nolabel="1"
+                               placeholder="Informations complémentaires..."/>
+                    </group>
+                </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Kanban View -->
+    <record id="view_syndic_person_apartment_kanban" model="ir.ui.view">
+        <field name="name">syndic.person.apartment.kanban</field>
+        <field name="model">syndic.person.apartment</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="person_id"/>
+                <field name="apartment_id"/>
+                <field name="statut"/>
+                <field name="part"/>
+                <field name="quote_part"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="person_id"/>
+                                    </strong>
+                                    <br/>
+                                    <small>
+                                        <field name="apartment_id"/>
+                                    </small>
+                                </div>
+                                <span class="badge badge-pill badge-info float-right">
+                                    <field name="statut"/>
+                                </span>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div>Part: <field name="part"/>%</div>
+                                <div>Quote-part: <field name="quote_part"/></div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_syndic_person_apartment_search" model="ir.ui.view">
+        <field name="name">syndic.person.apartment.search</field>
+        <field name="model">syndic.person.apartment</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher Copropriété">
+                <field name="person_id"/>
+                <field name="apartment_id"/>
+                <field name="building_id"/>
+                <field name="residence_id"/>
+
+                <filter string="Propriétaires" name="proprietaire" domain="[('statut', '=', 'proprietaire')]"/>
+                <filter string="Locataires" name="locataire" domain="[('statut', '=', 'locataire')]"/>
+                <filter string="Usufruitiers" name="usufruitier" domain="[('statut', '=', 'usufruitier')]"/>
+
+                <separator/>
+                <filter string="En cours" name="en_cours"
+                        domain="['|', ('date_fin', '=', False), ('date_fin', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <filter string="Terminé" name="termine"
+                        domain="[('date_fin', '&lt;', context_today().strftime('%Y-%m-%d'))]"/>
+
+                <separator/>
+                <filter string="Actif" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archivé" name="inactive" domain="[('active', '=', False)]"/>
+
+                <group expand="0" string="Grouper par">
+                    <filter string="Personne" name="group_person" context="{'group_by': 'person_id'}"/>
+                    <filter string="Appartement" name="group_apartment" context="{'group_by': 'apartment_id'}"/>
+                    <filter string="Immeuble" name="group_building" context="{'group_by': 'building_id'}"/>
+                    <filter string="Résidence" name="group_residence" context="{'group_by': 'residence_id'}"/>
+                    <filter string="Statut" name="group_statut" context="{'group_by': 'statut'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_syndic_person_apartment" model="ir.actions.act_window">
+        <field name="name">Copropriétés</field>
+        <field name="res_model">syndic.person.apartment</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="context">{'search_default_active': 1, 'search_default_en_cours': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créer une nouvelle liaison personne-appartement</p>
+            <p>Définissez qui possède ou occupe quel appartement, avec les quotes-parts correspondantes.</p>
+        </field>
+    </record>
+</odoo>

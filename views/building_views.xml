@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_syndic_building_tree" model="ir.ui.view">
+        <field name="name">syndic.building.tree</field>
+        <field name="model">syndic.building</field>
+        <field name="arch" type="xml">
+            <tree string="Immeubles">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="residence_id"/>
+                <field name="nb_floors"/>
+                <field name="apartment_count"/>
+                <field name="construction_year"/>
+                <field name="active" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View (Odoo 17 compliant – no states/attrs on buttons) -->
+    <record id="view_syndic_building_form" model="ir.ui.view">
+        <field name="name">syndic.building.form</field>
+        <field name="model">syndic.building</field>
+        <field name="arch" type="xml">
+            <form string="Immeuble">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="%(action_syndic_apartment)d" type="action"
+                                class="oe_stat_button" icon="fa-home"
+                                context="{'default_building_id': active_id}"
+                                invisible="active == False"/>
+                    </div>
+
+                    <widget name="web_ribbon" title="Archivé" bg_color="bg-danger"
+                            invisible="active == True"/>
+
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                            <field name="residence_id" options="{'no_create': True}"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="nb_floors"/>
+                            <field name="construction_year"/>
+                        </group>
+                    </group>
+
+                    <group string="Adresse">
+                        <field name="address" placeholder="Si différente de la résidence..."/>
+                    </group>
+
+                    <notebook>
+                        <page string="Appartements">
+                            <field name="apartment_ids">
+                                <tree editable="bottom">
+                                    <field name="num"/>
+                                    <field name="type"/>
+                                    <field name="floor"/>
+                                    <field name="surface"/>
+                                    <field name="nb_rooms"/>
+                                    <field name="owner_count"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_syndic_building_search" model="ir.ui.view">
+        <field name="name">syndic.building.search</field>
+        <field name="model">syndic.building</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher Immeuble">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="residence_id"/>
+                <filter string="Actif" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archivé" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Grouper par">
+                    <filter string="Résidence" name="group_residence" context="{'group_by': 'residence_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_syndic_building" model="ir.actions.act_window">
+        <field name="name">Immeubles</field>
+        <field name="res_model">syndic.building</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Créer votre premier immeuble</p>
+            <p>Un immeuble fait partie d'une résidence et contient plusieurs appartements.</p>
+        </field>
+    </record>
+</odoo>

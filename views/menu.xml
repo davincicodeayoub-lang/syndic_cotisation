@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Root Menu -->
+    <menuitem id="menu_syndic_root"
+              name="Syndic"
+              sequence="10"
+              web_icon="syndic_cotisation,static/description/icon.png"/>
+
+    <!-- Configuration Menu -->
+    <menuitem id="menu_syndic_config"
+              name="Configuration"
+              parent="menu_syndic_root"
+              sequence="100"/>
+
+    <!-- Main Menus -->
+    <menuitem id="menu_syndic_residence"
+              name="Résidences"
+              parent="menu_syndic_root"
+              action="action_syndic_residence"
+              sequence="10"/>
+
+    <menuitem id="menu_syndic_building"
+              name="Immeubles"
+              parent="menu_syndic_root"
+              action="action_syndic_building"
+              sequence="20"/>
+
+    <menuitem id="menu_syndic_apartment"
+              name="Appartements"
+              parent="menu_syndic_root"
+              action="action_syndic_apartment"
+              sequence="30"/>
+
+    <menuitem id="menu_syndic_person"
+              name="Personnes"
+              parent="menu_syndic_root"
+              action="action_syndic_person"
+              sequence="40"/>
+
+    <menuitem id="menu_syndic_person_apartment"
+              name="Copropriétés"
+              parent="menu_syndic_root"
+              action="action_syndic_person_apartment"
+              sequence="50"/>
+
+    <!-- Financial Menus -->
+    <menuitem id="menu_syndic_financial"
+              name="Financier"
+              parent="menu_syndic_root"
+              sequence="60"/>
+
+    <menuitem id="menu_syndic_appel_fond"
+              name="Appels de fonds"
+              parent="menu_syndic_financial"
+              action="action_syndic_appel_fond"
+              sequence="10"/>
+
+    <menuitem id="menu_syndic_reglement"
+              name="Règlements"
+              parent="menu_syndic_financial"
+              action="action_syndic_reglement"
+              sequence="20"/>
+
+    <!-- Reporting Menu -->
+    <menuitem id="menu_syndic_reporting"
+              name="Rapports"
+              parent="menu_syndic_root"
+              sequence="90"/>
+
+</odoo>

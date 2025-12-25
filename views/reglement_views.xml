@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_syndic_reglement_tree" model="ir.ui.view">
+        <field name="name">syndic.reglement.tree</field>
+        <field name="model">syndic.reglement</field>
+        <field name="arch" type="xml">
+            <tree string="Règlements"
+                  decoration-info="state=='brouillon'"
+                  decoration-success="state=='encaisse'"
+                  decoration-warning="state=='valide'"
+                  decoration-danger="state in ['rejete','annule']">
+                <field name="name"/>
+                <field name="num_recu"/>
+                <field name="person_id"/>
+                <field name="apartment_id"/>
+                <field name="residence_id"/>
+                <field name="date"/>
+                <field name="montant" sum="Total"/>
+                <field name="mode"/>
+                <field name="appel_fond_id"/>
+                <field name="state" widget="badge"
+                       decoration-info="state=='brouillon'"
+                       decoration-success="state=='encaisse'"
+                       decoration-warning="state=='valide'"
+                       decoration-danger="state in ['rejete','annule']"/>
+                <field name="is_printed" invisible="1"/>
+                <field name="active" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View (Odoo 17 compliant – no states/attrs on buttons) -->
+    <record id="view_syndic_reglement_form" model="ir.ui.view">
+        <field name="name">syndic.reglement.form</field>
+        <field name="model">syndic.reglement</field>
+        <field name="arch" type="xml">
+            <form string="Règlement">
+                <header>
+                    <button name="action_validate" type="object"
+                            string="Valider"
+                            invisible="state != 'brouillon'"
+                            class="oe_highlight"/>
+                    <button name="action_encaisse" type="object"
+                            string="Encaisser"
+                            invisible="state != 'valide'"
+                            class="oe_highlight"/>
+                    <button name="action_print_receipt" type="object"
+                            string="Imprimer reçu"
+                            invisible="state not in ('valide','encaisse')"
+                            class="oe_highlight"/>
+                    <button name="action_reject" type="object"
+                            string="Rejeter"
+                            invisible="state != 'valide'"/>
+                    <button name="action_cancel" type="object"
+                            string="Annuler"
+                            invisible="state not in ('brouillon','valide')"/>
+                    <button name="action_draft" type="object"
+                            string="Remettre en brouillon"
+                            invisible="state not in ('rejete','annule')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="brouillon,valide,encaisse"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_print_receipt" type="object"
+                                class="oe_stat_button" icon="fa-print"
+                                invisible="state not in ('valide','encaisse')">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Imprimer</span>
+                            </div>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="Archivé" bg_color="bg-danger"
+                            invisible="active == True"/>
+                    <widget name="web_ribbon" title="Rejeté" bg_color="bg-danger"
+                            invisible="state != 'rejete'"/>
+                    <widget name="web_ribbon" title="Annulé" bg_color="bg-danger"
+                            invisible="state != 'annule'"/>
+                    <widget name="web_ribbon" title="Imprimé" bg_color="bg-success"
+                            invisible="is_printed == False"/>
+
+                    <group>
+                        <group>
+                            <field name="name" readonly="1"/>
+                            <field name="num_recu"/>
+                            <field name="person_id" options="{'no_create': True}"/>
+                            <field name="apartment_id" options="{'no_create': True}"/>
+                            <field name="residence_id"/>
+                            <field name="active" invisible="1"/>
+                            <field name="is_printed" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                            <field name="montant"/>
+                            <field name="mode"/>
+                            <field name="appel_fond_id" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+
+                    <group invisible="mode != 'cheque'">
+                        <group string="Détails Chèque">
+                            <field name="num_cheque"
+                                   required="mode == 'cheque'"/>
+                            <field name="banque"/>
+                            <field name="date_encaissement"/>
+                        </group>
+                    </group>
+
+                    <group invisible="mode != 'virement'">
+                        <group string="Détails Virement">
+                            <field name="reference_virement"/>
+                        </group>
+                    </group>
+
+                    <group string="Notes">
+                        <field name="notes" nolabel="1"
+                               placeholder="Notes et informations complémentaires..."/>
+                    </group>
+                </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Kanban View -->
+    <record id="view_syndic_reglement_kanban" model="ir.ui.view">
+        <field name="name">syndic.reglement.kanban</field>
+        <field name="model">syndic.reglement</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state">
+                <field name="name"/>
+                <field name="person_id"/>
+                <field name="montant"/>
+                <field name="date"/>
+                <field name="mode"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong class="o_kanban_record_title">
+                                        <field name="person_id"/>
+                                    </strong>
+                                    <br/>
+                                    <small>
+                                        <field name="name"/>
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div><strong>Montant:</strong> <field name="montant"/> MAD</div>
+                                <div><strong>Date:</strong> <field name="date"/></div>
+                                <div><strong>Mode:</strong> <field name="mode"/></div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Search View (Odoo 17 compliant – no relativedelta) -->
+    <record id="view_syndic_reglement_search" model="ir.ui.view">
+        <field name="name">syndic.reglement.search</field>
+        <field name="model">syndic.reglement</field>
+        <field name="arch" type="xml">
+            <search string="Rechercher Règlement">
+                <field name="name"/>
+                <field name="num_recu"/>
+                <field name="person_id"/>
+                <field name="apartment_id"/>
+                <field name="residence_id"/>
+                <field name="appel_fond_id"/>
+
+                <filter string="Brouillon" name="brouillon" domain="[('state', '=', 'brouillon')]"/>
+                <filter string="Validé"   name="valide"  domain="[('state', '=', 'valide')]"/>
+                <filter string="Encaissé" name="encaisse" domain="[('state', '=', 'encaisse')]"/>
+                <filter string="Rejeté"   name="rejete"  domain="[('state', '=', 'rejete')]"/>
+
+                <separator/>
+                <filter string="Espèces"  name="espece"  domain="[('mode', '=', 'espece')]"/>
+                <filter string="Chèque"   name="cheque"  domain="[('mode', '=', 'cheque')]"/>
+                <filter string="Virement" name="virement" domain="[('mode', '=', 'virement')]"/>
+
+                <separator/>
+                <!--  Ce mois : du 1er au dernier jour du mois en cours  -->
+                <filter string="Ce mois"
+                        name="ce_mois"
+                        domain="[
+                            ('date', '&gt;=', context_today().strftime('%Y-%m-01')),
+                            ('date', '&lt;=', (context_today() + relativedelta(months=1, day=1, days=-1)).strftime('%Y-%m-%d'))
+                        ]"/>
+                <!--  Cette année : 1 janvier → 31 décembre  -->
+                <filter string="Cette année"
+                        name="cette_annee"
+                        domain="[
+                            ('date', '&gt;=', context_today().strftime('%Y-01-01')),
+                            ('date', '&lt;=', context_today().strftime('%Y-12-31'))
+                        ]"/>
+
+                <separator/>
+                <filter string="Imprimés"   name="printed"   domain="[('is_printed', '=', True)]"/>
+                <filter string="Non imprimés" name="not_printed" domain="[('is_printed', '=', False)]"/>
+
+                <separator/>
+                <filter string="Actif"  name="active"  domain="[('active', '=', True)]"/>
+                <filter string="Archivé" name="inactive" domain="[('active', '=', False)]"/>
+
+                <group expand="0" string="Grouper par">
+                    <filter string="Personne" name="group_person" context="{'group_by': 'person_id'}"/>
+                    <filter string="Résidence" name="group_residence" context="{'group_by': 'residence_id'}"/>
+                    <filter string="Mode de paiement" name="group_mode" context="{'group_by': 'mode'}"/>
+                    <filter string="État" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="Date" name="group_date" context="{'group_by': 'date'}"/>
+                    <filter string="Appel de fonds" name="group_appel_fond" context="{'group_by': 'appel_fond_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_syndic_reglement" model="ir.actions.act_window">
+        <field name="name">Règlements</field>
+        <field name="res_model">syndic.reglement</field>
+        <field name="view_mode">tree,kanban,form</field>
+        <field name="context">{'search_default_active': 1, 'search_default_cette_annee': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Enregistrer un nouveau règlement</p>
+            <p>Enregistrez les paiements effectués par les copropriétaires pour les appels de fonds.</p>
+        </field>
+    </record>
+
+    <!-- Calendar View (bonus) -->
+    <record id="view_syndic_reglement_calendar" model="ir.ui.view">
+        <field name="name">syndic.reglement.calendar</field>
+        <field name="model">syndic.reglement</field>
+        <field name="arch" type="xml">
+            <calendar string="Règlements" date_start="date" color="state" mode="month">
+                <field name="person_id"/>
+                <field name="montant"/>
+                <field name="mode"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Pivot View (bonus) -->
+    <record id="view_syndic_reglement_pivot" model="ir.ui.view">
+        <field name="name">syndic.reglement.pivot</field>
+        <field name="model">syndic.reglement</field>
+        <field name="arch" type="xml">
+            <pivot string="Analyse des Règlements">
+                <field name="person_id" type="row"/>
+                <field name="date" interval="month" type="col"/>
+                <field name="montant" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Graph View (bonus) -->
+    <record id="view_syndic_reglement_graph" model="ir.ui.view">
+        <field name="name">syndic.reglement.graph</field>
+        <field name="model">syndic.reglement</field>
+        <field name="arch" type="xml">
+            <graph string="Règlements" type="bar">
+                <field name="date" interval="month"/>
+                <field name="montant" type="measure"/>
+            </graph>
+        </field>
+    </record>
+</odoo>
