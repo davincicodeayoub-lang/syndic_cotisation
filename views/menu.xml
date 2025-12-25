@@ -11,6 +11,18 @@
               name="Configuration"
               parent="menu_syndic_root"
               sequence="100"/>
+              
+    <menuitem id="menu_syndic_charge_category"
+              name="Catégories de charges"
+              parent="menu_syndic_config"
+              action="action_syndic_charge_category"
+              sequence="10"/>
+
+    <menuitem id="menu_syndic_bank_account"
+              name="Comptes Bancaires"
+              parent="menu_syndic_config"
+              action="action_syndic_bank_account"
+              sequence="20"/>
 
     <!-- Main Menus -->
     <menuitem id="menu_syndic_residence"
@@ -60,6 +72,20 @@
               parent="menu_syndic_financial"
               action="action_syndic_reglement"
               sequence="20"/>
+
+    <menuitem id="menu_syndic_budget"
+              name="Budgets"
+              parent="menu_syndic_financial"
+              action="action_syndic_budget"
+              sequence="30"/>
+
+    <!-- Contact Menu -->
+    <menuitem id="menu_syndic_contact"
+              name="Contacts"
+              parent="menu_syndic_root"
+              action="action_syndic_contact"
+              sequence="45"/>
+
 
     <!-- Reporting Menu -->
     <menuitem id="menu_syndic_reporting"

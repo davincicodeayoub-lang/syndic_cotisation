@@ -55,6 +55,12 @@ Features:
         #reports
         'report/reglement_receipt_report.xml',
         'report/report_reglement_receipt_templates.xml',
+        
+        # New Views
+        'views/contact_views.xml',
+        'views/bank_account_views.xml',
+        'views/charge_category_views.xml',
+        'views/budget_views.xml',
 
         # Menu last
         'views/menu.xml',

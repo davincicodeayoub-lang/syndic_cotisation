@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_syndic_budget_tree" model="ir.ui.view">
+        <field name="name">syndic.budget.tree</field>
+        <field name="model">syndic.budget</field>
+        <field name="arch" type="xml">
+            <tree string="Budgets" decoration-info="state == 'draft'" decoration-muted="state == 'closed'">
+                <field name="residence_id"/>
+                <field name="year"/>
+                <field name="type"/>
+                <field name="total_amount"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'" decoration-success="state == 'approved'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_syndic_budget_form" model="ir.ui.view">
+        <field name="name">syndic.budget.form</field>
+        <field name="model">syndic.budget</field>
+        <field name="arch" type="xml">
+            <form string="Budget">
+                <header>
+                    <button name="action_approve" string="Approuver" type="object" class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_close" string="Clôturer" type="object"
+                            invisible="state != 'approved'"/>
+                    <button name="action_draft" string="Remettre en brouillon" type="object"
+                            invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,approved,closed"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="residence_id"/>
+                            <field name="year"/>
+                            <field name="type"/>
+                        </group>
+                        <group>
+                            <field name="total_amount"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Lignes Budgétaires">
+                            <field name="line_ids">
+                                <tree editable="bottom">
+                                    <field name="category_id"/>
+                                    <field name="description"/>
+                                    <field name="planned_amount" sum="Total Prévisionnel"/>
+                                    <field name="actual_amount" sum="Total Réel"/>
+                                    <field name="variance" sum="Total Écart"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes" placeholder="Notes..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_syndic_budget_search" model="ir.ui.view">
+        <field name="name">syndic.budget.search</field>
+        <field name="model">syndic.budget</field>
+        <field name="arch" type="xml">
+            <search string="Recherche Budget">
+                <field name="residence_id"/>
+                <field name="year"/>
+                <filter string="Prévisionnel" name="type_previsionnel" domain="[('type', '=', 'previsionnel')]"/>
+                <filter string="Réel" name="type_reel" domain="[('type', '=', 'reel')]"/>
+                <separator/>
+                <filter string="Brouillon" name="state_draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Approuvé" name="state_approved" domain="[('state', '=', 'approved')]"/>
+                <group expand="0" string="Grouper par">
+                    <filter string="Résidence" name="group_residence" context="{'group_by': 'residence_id'}"/>
+                    <filter string="Année" name="group_year" context="{'group_by': 'year'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_syndic_budget" model="ir.actions.act_window">
+        <field name="name">Budgets</field>
+        <field name="res_model">syndic.budget</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créer un nouveau budget
+            </p>
+        </field>
+    </record>
+</odoo>

@@ -5,3 +5,7 @@ from . import person
 from . import person_apartment
 from . import appel_fond
 from . import reglement
+from . import contact
+from . import bank_account
+from . import charge_category
+from . import budget

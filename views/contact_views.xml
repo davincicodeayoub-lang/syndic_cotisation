@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="view_syndic_contact_tree" model="ir.ui.view">
+        <field name="name">syndic.contact.tree</field>
+        <field name="model">syndic.contact</field>
+        <field name="arch" type="xml">
+            <tree string="Contacts" decoration-muted="active == False">
+                <field name="person_id"/>
+                <field name="name"/>
+                <field name="type"/>
+                <field name="relationship"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="is_primary" widget="boolean_toggle"/>
+                <field name="active" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_syndic_contact_form" model="ir.ui.view">
+        <field name="name">syndic.contact.form</field>
+        <field name="model">syndic.contact</field>
+        <field name="arch" type="xml">
+            <form string="Contact">
+                <sheet>
+                    <widget name="web_ribbon" title="Archivé" bg_color="bg-danger" invisible="active == True"/>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="person_id"/>
+                            <field name="type"/>
+                            <field name="relationship"/>
+                            <field name="is_primary" widget="boolean_toggle"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="phone" widget="phone"/>
+                            <field name="email" widget="email"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes" nolabel="1"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_syndic_contact_search" model="ir.ui.view">
+        <field name="name">syndic.contact.search</field>
+        <field name="model">syndic.contact</field>
+        <field name="arch" type="xml">
+            <search string="Recherche Contact">
+                <field name="name"/>
+                <field name="person_id"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <filter string="Urgence" name="type_emergency" domain="[('type', '=', 'emergency')]"/>
+                <filter string="Principal" name="primary" domain="[('is_primary', '=', True)]"/>
+                <separator/>
+                <filter string="Archivé" name="inactive" domain="[('active', '=', False)]"/>
+                <group expand="0" string="Grouper par">
+                    <filter string="Personne" name="group_person" context="{'group_by': 'person_id'}"/>
+                    <filter string="Type" name="group_type" context="{'group_by': 'type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_syndic_contact" model="ir.actions.act_window">
+        <field name="name">Contacts</field>
+        <field name="res_model">syndic.contact</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Créer un nouveau contact
+            </p>
+        </field>
+    </record>
+</odoo>
